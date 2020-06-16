@@ -67,32 +67,27 @@ async def run():
 
     lights = [dev for dev in devices if dev.has_light_control]
 
-    light = None
+    # Print all lights
+    print(lights)
 
-    for dev in lights:
-        print(dev)
-        if dev.light_control.can_set_color:
-            light = dev
-            break
+    # Lights can be accessed by its index, so lights[1] is the second light
+    if lights:
+        light = lights[0]
+    else:
+        print("No lights found!")
+        light = None
 
-    if not light:
-        print("No color bulbs found")
-        return
 
     def turnOnOff(bulb, state):
-        api(lights[bulb].light_control.set_state(state))
+        lights[bulb].light_control.set_state(state)
 
     def setColor(bulb, color):
-        api(lights[bulb].light_control.set_hex_color(color))
+        lights[bulb].light_control.set_hex_color(color)
 
-    def partymode():
-        for x in devices:
-            print(x)
-
-    partymode()
+    turnOnOff(0, 1)
 
     await asyncio.sleep(30)
 
     await api_factory.shutdown()
 
-asyncio.get_event_loop().run_until_complete(run())
+asyncio.run(run())
